@@ -52,11 +52,12 @@ ZSH_THEME="robbyrussell"
 plugins=(git history-substring-search vim-mode osx)
 
 # User configuration
-
+export PATH="$HOME/anaconda/bin:$PATH"
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin"
+source ~/.bash_profile
 # export MANPATH="/usr/local/man:$MANPATH"
 
-source $ZSH/oh-my-zsh.sh
+#source $ZSH/oh-my-zsh.sh
 source ~/.aliases
 
 
@@ -64,11 +65,11 @@ source ~/.aliases
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+ if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+ else
+   export EDITOR='mvim'
+ fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -88,6 +89,5 @@ source ~/.aliases
 bindkey '\e[A' history-beginning-search-backward
 bindkey '\e[B' history-beginning-search-forward
 
-eval "$(rbenv init -)"
 export NVM_DIR="/Users/mike/.nvm"
 [ -s "$NVM_DIR/nvm2.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

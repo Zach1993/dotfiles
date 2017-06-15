@@ -4,14 +4,28 @@ runtime macros/matchit.vim
 set ttyfast
 set lazyredraw
 
-let g:ruby_path="~/.rvm/bin/ruby"
+augroup myvimrc
+        au!
+        au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+augroup END
 
 " have jsx highlighting/indenting work in .js files as well
 let g:jsx_ext_required = 0
 
 let $PATH='/usr/local/bin:' . $PATH
-
+set encoding=utf-8
 :au FocusLost * :wa "Save on focus lost
+
+
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
 
 " Sessions
 let g:session_autoload = 'no'
@@ -19,23 +33,12 @@ let g:session_autoload = 'no'
 " Leader Mappings
 map <Space> <leader>
 map <Leader>w :update<CR>
-map <Leader>q :qall<CR>
-map <Leader>gs :Gstatus<CR>
-map <Leader>gc :Gcommit<CR>
-map <Leader>gp :Gpush<CR>
-"
-" vim-test mappings
-nmap <silent> <leader>s :TestNearest<CR>
-nmap <silent> <leader>t :TestFile<CR>
-nmap <silent> <leader>a :TestSuite<CR>
-nmap <silent> <leader>l :TestLast<CR>
-
-let test#strategy = "tslime"
-
-" Toggle nerdtree with F10
-map <F10> :NERDTreeToggle<CR>
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+nnoremap <Leader>f :NERDTreeToggle<Enter>
 " Current file in nerdtree
-map <F9> :NERDTreeFind<CR>
+nnoremap <silent> <Leader>v :NERDTreeFind<CR>
+nnoremap <Leader><space> :noh<CR>
 
 " Reduce timeout after <ESC> is recieved.
 set ttimeout
@@ -46,11 +49,6 @@ set notimeout
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline
 set cursorline
-
-"key to insert mode with paste using F2 key
-map <F2> :set paste<CR>i
-" Leave paste mode on exit
-au InsertLeave * set nopaste
 
 set backspace=2   " Backspace deletes like most programs in insert mode
 set nocompatible  " Use Vim settings, rather then Vi settings
@@ -68,12 +66,7 @@ set autowrite     " Automatically :write before running commands
 " Fuzzy finder: ignore stuff that can't be opened, and generated files
 let g:fuzzy_ignore = "*.png;*.PNG;*.JPG;*.jpg;*.GIF;*.gif;vendor/**;coverage/**;tmp/**;rdoc/**"
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
-  syntax on
-endif
-
+syntax on
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles
 endif
@@ -95,7 +88,6 @@ augroup vimrcEx
     \ endif
 
   " Set syntax highlighting for specific file types
-  autocmd BufRead,BufNewFile Appraisals set filetype=ruby
   autocmd BufRead,BufNewFile *.md set filetype=markdown
 
   " Enable spellchecking for Markdown
@@ -108,15 +100,20 @@ augroup END
 " bind K to search word under cursor
 nnoremap K :Ag "\b<C-R><C-W>\b"<CR>:cw<CR>
 
-" Softtabs, 2 spaces
-set tabstop=2
-set shiftwidth=2
-set expandtab
-
+" Softtabs, 4 spaces
+au BufNewFile,BufRead *.py
+    set tabstop=4
+    set softtabstop=4
+    set textwidth=79
+    set colorcolumn=+1
+    set expandtab
+    set autoindent
+    set fileformat=unix
+    let python_highlight_all=1
+    syntax on
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 let g:rspec_command = 'call Send_to_Tmux("NO_RENDERER=true bundle exec rspec {spec}\n")'
-" Mocha command is specific to Product Hunt setup. Probably doesn't work with
-" other apps
-let g:mocha_js_command = 'call Send_to_Tmux("$(npm bin)/mocha --opts spec/javascripts/mocha.opts {spec}\n")'
 let g:rspec_runner = "os_x_iterm"
 
 " Display extra whitespace
@@ -148,10 +145,9 @@ set t_Co=256
 :set ignorecase
 
 " Color scheme
-" let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set background=dark " or light
 colorscheme solarized
-
 
 " Numbers
 set number
@@ -168,21 +164,6 @@ set undoreload=10000
 :nnoremap <expr> Y (v:register ==# '"' ? '"+' : '') . 'Y'
 :xnoremap <expr> y (v:register ==# '"' ? '"+' : '') . 'y'
 :xnoremap <expr> Y (v:register ==# '"' ? '"+' : '') . 'Y'
-
-" Tab completion
-" will insert tab at beginning of line,
-" will use completion if not at beginning
-set wildmode=list:longest,list:full
-set complete=.,w,t
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
 " Exclude Javascript files in :Rtags via rails.vim due to warnings when parsing
 let g:Tlist_Ctags_Cmd="ctags --exclude='*.js'"
@@ -214,31 +195,12 @@ nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
 nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
 " configure syntastic syntax checking to check on open as well as save
-let g:syntastic_ruby_checkers = ['mri']
 let g:syntastic_enable_highlighting=0
-
-" Remove trailing whitespace on save for ruby files.
-function! s:RemoveTrailingWhitespaces()
-  "Save last cursor position
-  let l = line(".")
-  let c = col(".")
-
-  %s/\s\+$//ge
-
-  call cursor(l,c)
-endfunction
-
-au BufWritePre * :call <SID>RemoveTrailingWhitespaces()
 
 " cmd n, cmd p for fwd/backward in search
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
-" Create related file (Rails Spec file if missing). :AC
-function! s:CreateRelated()
-  let related = rails#buffer().alternate_candidates()[0]
-  call s:Open(related)
-endfunction
 
 function! s:Open(file)
   exec('vsplit ' . a:file)
