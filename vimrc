@@ -6,8 +6,9 @@ set lazyredraw
 
 augroup myvimrc
         au!
-        au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+        au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | endif
 augroup END
+
 
 " have jsx highlighting/indenting work in .js files as well
 let g:jsx_ext_required = 0
@@ -15,17 +16,6 @@ let g:jsx_ext_required = 0
 let $PATH='/usr/local/bin:' . $PATH
 set encoding=utf-8
 :au FocusLost * :wa "Save on focus lost
-
-
-"python with virtualenv support
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
 
 " Sessions
 let g:session_autoload = 'no'
@@ -100,17 +90,6 @@ augroup END
 " bind K to search word under cursor
 nnoremap K :Ag "\b<C-R><C-W>\b"<CR>:cw<CR>
 
-" Softtabs, 4 spaces
-au BufNewFile,BufRead *.py
-    set tabstop=4
-    set softtabstop=4
-    set textwidth=79
-    set colorcolumn=+1
-    set expandtab
-    set autoindent
-    set fileformat=unix
-    let python_highlight_all=1
-    syntax on
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 let g:rspec_command = 'call Send_to_Tmux("NO_RENDERER=true bundle exec rspec {spec}\n")'
@@ -124,6 +103,9 @@ if executable('ag')
   " Use Ag over Grep
   set grepprg=ag\ --nogroup
   let g:grep_cmd_opts = '--line-numbers --noheading'
+
+  " search from current directory
+  let g:ag_working_path_mode="r"
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag %s -l -g ""'
@@ -165,9 +147,6 @@ set undoreload=10000
 :xnoremap <expr> y (v:register ==# '"' ? '"+' : '') . 'y'
 :xnoremap <expr> Y (v:register ==# '"' ? '"+' : '') . 'Y'
 
-" Exclude Javascript files in :Rtags via rails.vim due to warnings when parsing
-let g:Tlist_Ctags_Cmd="ctags --exclude='*.js'"
-
 " Get off my lawn - helpful when learning Vim :)
 nnoremap <Left> :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
@@ -194,8 +173,19 @@ nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
 nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
-" configure syntastic syntax checking to check on open as well as save
-let g:syntastic_enable_highlighting=0
+" ale linter
+let g:ale_linters = {'python3': 'all'}
+let g:ale_set_highlights = 1
+let g:ale_set_quickfix = 1
+let g:ale_lint_on_text_changed = 'always'
+let g:ale_python_flake8_use_global = 0
+let g:ale_virtualenv_dir_names = ['conda', 'anaconda']
+let g:ale_python_flake8_executable = 'python3'
+let g:ale_python_flake8_options = '-m flake8'
+let g:ale_python_pylint_executable = 'python3'
+
+let g:ycm_python_binary_path = 'python3'
+let g:ycm_min_num_of_chars_for_completion = 1
 
 " cmd n, cmd p for fwd/backward in search
 map <C-n> :cn<CR>

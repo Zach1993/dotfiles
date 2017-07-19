@@ -22,7 +22,7 @@
 [include]
   path = .gitconfig.local
 [commit]
-	template = /Users/mike/.gitmessage
+	template = /Users/zach/.gitmessage
 [user]
   name = zach1993
   email = zachllee93@gmail.com
@@ -42,7 +42,7 @@
 [credential]
 
 [hub]
-protocol = https
+protocol = ssh
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
