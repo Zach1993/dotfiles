@@ -174,7 +174,9 @@ nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
 nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
 " ale linter
-let g:ale_linters = {'python3': 'all'}
+let g:ale_linters = {'python3': ['pylint'], 'python': ['flake8', 'yapf']}
+let g:ale_fixers = {'python3': ['yapf', 'isort','add_blank_lines_for_python_control_statements'], 'python': ['yapf', 'isort', 'add_blank_lines_for_python_control_statements']}
+nmap <F8> <Plug>(ale_fix)
 let g:ale_set_highlights = 1
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_text_changed = 'always'
