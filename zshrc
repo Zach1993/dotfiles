@@ -52,12 +52,15 @@ fpath=(/usr/local/share/zsh-completions $fpath)
 plugins=(git history-substring-search vim-mode osx)
 
 # User configuration
-export PATH="$HOME/anaconda/bin:$PATH"
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin"
-source ~/.bash_profile
+# added by Anaconda3 4.3.1 installer
+export PATH="/Users/zach/anaconda/bin:$PATH"
+BROWSER=/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
+export BROWSER
+# source ~/.bash_profile
 # export MANPATH="/usr/local/man:$MANPATH"
 
-#source $ZSH/oh-my-zsh.sh
+source $ZSH/oh-my-zsh.sh
 source ~/.aliases
 
 

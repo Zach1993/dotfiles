@@ -113,6 +113,8 @@ if executable('ag')
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -175,7 +177,7 @@ nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
 " ale linter
 let g:ale_linters = {'python3': ['pylint'], 'python': ['flake8', 'yapf']}
-let g:ale_fixers = {'python3': ['yapf', 'isort','add_blank_lines_for_python_control_statements'], 'python': ['yapf', 'isort', 'add_blank_lines_for_python_control_statements']}
+let g:ale_fixers = {'python3': ['yapf', 'isort'], 'python': ['yapf', 'isort']}
 nmap <F8> <Plug>(ale_fix)
 let g:ale_set_highlights = 1
 let g:ale_set_quickfix = 1
@@ -183,7 +185,7 @@ let g:ale_lint_on_text_changed = 'always'
 let g:ale_python_flake8_use_global = 0
 let g:ale_virtualenv_dir_names = ['conda', 'anaconda']
 let g:ale_python_flake8_executable = 'python3'
-let g:ale_python_flake8_options = '-m flake8'
+let g:ale_python_flake8_options = 'flake8 --ignore=W, D401'
 let g:ale_python_pylint_executable = 'python3'
 
 let g:ycm_python_binary_path = 'python3'
