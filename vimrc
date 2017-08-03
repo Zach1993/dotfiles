@@ -21,14 +21,34 @@ set encoding=utf-8
 let g:session_autoload = 'no'
 
 " Leader Mappings
-map <Space> <leader>
 map <Leader>w :update<CR>
 autocmd StdinReadPre * let s:std_in=1
+
+" Quick vsplit to edit vimrc from any file
+:nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+
+" Update with latest vimrc changes
+:nnoremap <leader>sv :source $MYVIMRC<cr>
+
+" Start vim with NERDTree open
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 nnoremap <Leader>f :NERDTreeToggle<Enter>
+
 " Current file in nerdtree
 nnoremap <silent> <Leader>v :NERDTreeFind<CR>
-nnoremap <Leader><space> :noh<CR>
+
+" Clear highlighting on return in normal mode
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+
+" Enable folding with space key
+nnoremap <space> za
+
+" system clipboard
+set clipboard=unnamed
 
 " Reduce timeout after <ESC> is recieved.
 set ttimeout
@@ -199,5 +219,6 @@ map <C-p> :cp<CR>
 function! s:Open(file)
   exec('vsplit ' . a:file)
 endfunction
+
 
 command! AC :call <SID>CreateRelated()
