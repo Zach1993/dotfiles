@@ -41,6 +41,7 @@ Plugin 'jsx/jsx.vim'
 Plugin 'terryma/vim-expand-region'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'w0rp/ale'
+Plugin 'tmhedberg/SimpylFold'
 
 call vundle#end()            " required
 Plugin 'altercation/vim-colors-solarized'
