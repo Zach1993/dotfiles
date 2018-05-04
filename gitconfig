@@ -15,7 +15,7 @@
   st = status
   up = !git fetch origin && git rebase origin/master
 [core]
-  excludesfile = ~/.gitignore
+	excludesfile = /Users/zach/.gitignore
   autocrlf = input
 [merge]
   ff = only
@@ -24,8 +24,8 @@
 [commit]
 	template = /Users/zach/.gitmessage
 [user]
-  name = zach1993
-  email = zachllee93@gmail.com
+	name = Zachary Lee
+	email = Zllee1@asu.edu
 [diff]
     tool = Kaleidoscope
 [difftool "Kaleidoscope"]
@@ -44,9 +44,10 @@
 [hub]
 protocol = ssh
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
 	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
 [credential]
 	helper = osxkeychain
 [url "https://github.com"]

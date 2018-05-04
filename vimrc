@@ -20,6 +20,9 @@ set encoding=utf-8
 " Sessions
 let g:session_autoload = 'no'
 
+" toggle paste
+set pastetoggle=<F2>
+
 " Leader Mappings
 map <Leader>w :update<CR>
 autocmd StdinReadPre * let s:std_in=1
@@ -38,7 +41,7 @@ nnoremap <Leader>f :NERDTreeToggle<Enter>
 nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 
 " Clear highlighting on return in normal mode
-nnoremap <silent> <CR> :nohlsearch<CR><CR>
+nnoremap <silent> <CR> :noh<CR><CR>
 
 " Enable folding
 set foldmethod=indent
@@ -58,6 +61,7 @@ set notimeout
 " highlight vertical column of cursor
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline
+" map <silent> <Leader>cc :set cursorcolumn! <CR>
 set cursorline
 
 set backspace=2   " Backspace deletes like most programs in insert mode
@@ -107,11 +111,6 @@ augroup vimrcEx
   autocmd BufRead,BufNewFile *.md setlocal textwidth=80
 augroup END
 
-" bind K to search word under cursor
-nnoremap K :Ag "\b<C-R><C-W>\b"<CR>:cw<CR>
-
-let g:ycm_autoclose_preview_window_after_completion=1
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 let g:rspec_command = 'call Send_to_Tmux("NO_RENDERER=true bundle exec rspec {spec}\n")'
 let g:rspec_runner = "os_x_iterm"
 
@@ -175,9 +174,6 @@ nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up> :echoe "Use k"<CR>
 nnoremap <Down> :echoe "Use j"<CR>
 
-" Treat <li> and <p> tags like the block tags they are
-let g:html_indent_tags = 'li\|p'
-
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
@@ -195,25 +191,36 @@ nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
 nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
+"SuperTab tab down
+let g:SuperTabDefaultCompletionType = "<c-n>"
+" let g:SuperTabContextDefaultCompletionType = "<c-n>"
 " ale linter
 let g:ale_linters = {'python3': ['pylint'], 'python': ['flake8', 'yapf']}
-let g:ale_fixers = {'python3': ['yapf', 'isort'], 'python': ['yapf', 'isort']}
+let g:ale_fixers = {'python3': ['yapf'], 'python': ['yapf']}
 nmap <F8> <Plug>(ale_fix)
 let g:ale_set_highlights = 1
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_text_changed = 'always'
+let g:ale_lint_on_enter = 1
 let g:ale_python_flake8_use_global = 0
+" let g:ale_python_pylint_use_global = 0
+" let g:ale_python_yapf_use_global = 0
 let g:ale_virtualenv_dir_names = ['conda', 'anaconda']
 let g:ale_python_flake8_executable = 'python3'
-let g:ale_python_flake8_options = 'flake8 --ignore=W, D401'
-let g:ale_python_pylint_executable = 'python3'
-
-let g:ycm_python_binary_path = 'python3'
-let g:ycm_min_num_of_chars_for_completion = 1
+let g:ale_python_flake8_options = 'flake8 --ignore=W,D401,E402,E226'
+" let g:ale_python_pylint_executable = 'python3'
+" let g:ale_python_yapf_executable = 'python3'
+" Navigate between Ale Erros
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " cmd n, cmd p for fwd/backward in search
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
+
+" TAGBAR 
+" open and close tagbar window
+nmap <F9> :TagbarToggle<CR>
 
 
 function! s:Open(file)
